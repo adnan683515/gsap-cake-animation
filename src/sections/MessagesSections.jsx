@@ -58,6 +58,7 @@ export default function MessagesSections() {
 
         gsap.to('.messageContent', {
             rotate: 7,
+            y: 150,
             scrollTrigger: {
                 trigger: '.messageContent',
 

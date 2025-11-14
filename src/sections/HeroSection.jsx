@@ -43,7 +43,8 @@ export default function HeroSection() {
         });
 
         scrollTl.to(".hero-container", {
-            rotate: 7,
+            rotate: 5,
+            y: 150,
             scale: 0.9,
             borderRadius: "50%",
             ease: "power2.inOut"

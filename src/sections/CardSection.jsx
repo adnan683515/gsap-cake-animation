@@ -1,44 +1,102 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Card from '../components/Card'
-import img1 from './../../public/images/card2.png'
-import img2 from './../../public/images/card1.png'
-import img3 from './../../public/images/card3.png'
-import img4 from './../../public/images/card4.png'
-import img5 from './../../public/images/card5.png'
-import img6 from './../../public/images/card6.png'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const imageArray = [img1, img2, img3, img4, img5, img6]
+gsap.registerPlugin(ScrollTrigger)
+
+const imageArray = [
+    '/images/card2.png',
+    '/images/card1.png',
+    '/images/card3.png',
+    '/images/card4.png',
+    '/images/card5.png',
+    '/images/card6.png'
+]
 
 export default function CardSection() {
-    return (
-        <div className='w-full flex'>
+    const imageContainer = useRef(null)
+    const textDiv = useRef(null)
+    const slideDiv = useRef(null)
 
-            <div className='w-1/2 flex justify-center items-center  p-10'>
-                <section className=' text-center relative max-w-[80%]'>
-                    <h1 className='text-6xl text-black mb-10  font-semibold'>
+    const FuelDiv = useRef(null)
+
+    useEffect(() => {
+        if (imageContainer.current && textDiv.current) {
+            const width = imageContainer.current.getBoundingClientRect().width
+            const textDivWidth = textDiv.current.getBoundingClientRect().width
+
+            gsap.to(slideDiv.current, {
+                x: -width * imageArray.length - 1 + textDivWidth,
+                duration: 9,
+                ease: 'power2.inOut',
+                scrollTrigger: {
+                    trigger: slideDiv.current,
+                    start: 'top top',
+                    end: `+=${width * imageArray.length + textDivWidth}`,
+                    scrub: 1.2,
+                    pin: true,
+
+                }
+            })
+        }
+
+        return () => ScrollTrigger.killAll()
+    }, [])
+
+
+
+    useEffect(() => {
+        gsap.fromTo(
+            FuelDiv.current,
+            { clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)' },
+            {
+                clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+                duration: 1.2,
+                ease: 'power2.out',
+                scrub: 1,
+                scrollTrigger: {
+                    trigger: FuelDiv.current,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse',
+                }
+            }
+        )
+    }, [])
+
+
+
+    return (
+        <div ref={slideDiv} className='w-full cardContainer flex'>
+            <div ref={textDiv} className='w-1/2 flex justify-center items-center p-10'>
+                <section className='text-center relative max-w-[80%]'>
+                    <h1 className='text-6xl text-[#523] mb-10 font-semibold'>
                         STIR UP YOUR <br /> FEARLESS PAST AND
                     </h1>
 
-                    <div className='w-[200px] box mt-10  absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 h-[80px] flex justify-center items-center bg-[#E3A458]'>
-                        <h1 className='font-bold text-3xl'>FUEL UP</h1>
+                    <div ref={FuelDiv} className='max-w-[300px] min-w-[200px] border-4 border-white box mt-10 absolute left-1/2 top-1/3 -translate-x-1/2 -rotate-7 -translate-y-1/2 h-[80px] flex justify-center items-center bg-[#A26833]'>
+                        <h1 className='font-bold text-3xl text-[#FAEADE]'>FUEL UP</h1>
                     </div>
 
-                    <h1 className='text-6xl text-black  mt-16 font-semibold'>
+                    <h1 className='text-6xl text-[#523] mt-16 font-semibold'>
                         YOUR FUTURE WITH EVERY GULP OF PERFECT Protein
                     </h1>
                 </section>
             </div>
 
-
-            <div className='w-1/2 flex overflow-x-hidden gap-5 p-5'>
-                {imageArray.map((item, index) => (
-                    <div
-                        key={index}
-                        className={`w-full flex-shrink-0 ${index === 0 ? 'ml-0' : ''}`}
-                    >
-                        <Card img={item} />
-                    </div>
-                ))}
+            <div ref={imageContainer} className='w-1/2 flex gap-10 p-5'>
+                {imageArray.map((item, index) => {
+                    const rotateIndex = index % 2 === 0 ? 'rotate-3' : '-rotate-3'
+                    return (
+                        <div
+                            key={index}
+                            className={`w-full ${rotateIndex} flex-shrink-0 ${index === 0 ? 'ml-0' : ''
+                                }`}
+                        >
+                            <Card img={item} />
+                        </div>
+                    )
+                })}
             </div>
         </div>
     )
